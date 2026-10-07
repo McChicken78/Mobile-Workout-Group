@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
@@ -54,3 +55,7 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+=======
+# Mobile-Workout-Group
+This app is inspired by an old IOS application called "My Workout Group". The app was simple to use and fun for tracking and competing with friends on gym discipline. The app got removed and servers were taken down and I plan to create a more functional app.
+>>>>>>> 3dfbccfee89f0ee4791b93845fb28fdf210476ec
