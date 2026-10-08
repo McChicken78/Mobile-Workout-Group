@@ -19,7 +19,7 @@ export default function Welcome() {
       </View>
 
       {/* Bottom panel */}
-      <View className="rounded-t-[32px] bg-white px-6 pb-10 pt-8">
+      <View className="rounded-t-[32px] bg-white px-6 pb-14 pt-8">
         <Text className="mb-5 text-3xl font-bold text-[#1A0B10]">Welcome back!</Text>
 
         <View className="gap-3">
@@ -42,8 +42,6 @@ export default function Welcome() {
             <Text className="font-bold text-[#DC5863]">Create an account</Text>
           </Link>
         </Text>
-
-        
       </View>
     </SafeAreaView>
   );
