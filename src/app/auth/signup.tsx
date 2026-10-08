@@ -8,12 +8,18 @@ import { SignUpArea } from "@/components/auth/signupArea"
 export default function SignUp() {
   return (
     <GradientBackground>
+      {/* White backdrop for the bottom half, so the keyboard spacer below the panel shows white, not the gradient */}
+      <View className="absolute inset-x-0 bottom-0 h-1/2 bg-white" />
+
       <SafeAreaView className="flex-1" edges={["top", "left", "right"]}>
         <BackButton/>
 
-        {/* Scrolls the focused box above the keyboard, leaving bottomOffset px of space below it */}
+        {/* Scrolls the focused box above the keyboard, leaving bottomOffset px of space below it.
+            "layout" mode adds a real spacer under the content instead of a scroll inset, which avoids
+            a jump back to the top when the keyboard changes height between boxes (e.g. AutoFill bar). */}
         <KeyboardAwareScrollView
           bottomOffset={32}
+          mode="layout"
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="interactive"
@@ -31,7 +37,7 @@ export default function SignUp() {
           </View>
 
           {/* Bottom panel */}
-          <View className="flex-1 rounded-t-[32px] bg-white px-6 pb-10 pt-8">
+          <View className="grow rounded-t-[32px] bg-white px-6 pb-10 pt-8">
               <SignUpArea/>
           </View>
         </KeyboardAwareScrollView>

@@ -25,8 +25,8 @@ export function LoginArea(){
                 onBlur={() => setEmailFocused(false)}
                 placeholder="default@example.com"
                 placeholderTextColor="#8C8287"
-                className={`mt-2 h-[64px] mb-6 rounded-2xl bg-white px-4 text-base text-neutral-900 ${
-                    emailFocused ? "border-[2px] border-[#DC5863]" : "border-[1.5px] border-neutral-400"
+                className={`mt-2 h-[64px] mb-6 rounded-2xl border-[1.5px] bg-white px-4 text-base text-neutral-900 ${
+                    emailFocused ? "border-[#DC5863]" : "border-neutral-400"
                 }`}/>
 
             <PasswordField

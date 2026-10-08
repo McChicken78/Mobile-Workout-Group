@@ -17,10 +17,8 @@ export function PasswordField({ label, ...inputProps }: Props) {
 
       {/* The "box": border and background live here, not on the input */}
       <View
-        className={`h-[64px]  flex-row items-center rounded-2xl bg-white pl-4 pr-1 ${
-          focused
-            ? "border-[2px] border-[#DC5863]"
-            : "border-[1.5px] border-neutral-400"
+        className={`h-[64px] flex-row items-center rounded-2xl border-[1.5px] bg-white pl-4 pr-1 ${
+          focused ? "border-[#DC5863]" : "border-neutral-400"
         }`}
       >
         <TextInput

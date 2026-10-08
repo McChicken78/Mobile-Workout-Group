@@ -6,7 +6,9 @@ import { SignUpButton } from "../auth/signupButton";
 
 export function SignUpArea(){
     const [displayName, setDisplayName] = useState("");
+    const [focusDisplayName, setFocusDisplayName] = useState(false);
     const [email, setEmail] = useState("");
+    const [focusEmail, setFocusEmail] = useState(false);
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("")
     const [firstName, setFirstName] = useState("")
@@ -20,9 +22,13 @@ export function SignUpArea(){
             <TextInput
                 value={displayName}
                 onChangeText={setDisplayName}
+                onFocus={() => setFocusDisplayName(true)}
+                onBlur={() => setFocusDisplayName(false)}
                 placeholder="Lebron James"
                 placeholderTextColor="#8C8287"
-                className="mt-2 h-[64px] mb-6 rounded-2xl border-[1.5px] border-neutral-400 bg-white px-4 text-base text-neutral-900 active:border-[2px] active:border-[#DC5863]"/>
+                className={`mt-2 h-[64px] mb-6 rounded-2xl border-[1.5px] bg-white px-4 text-base text-neutral-900 ${
+                    focusDisplayName ? "border-[#DC5863]" : "border-neutral-400"
+                }`}/>
 
 
             <Text className="text-lg font-semibold text-black">
@@ -31,9 +37,13 @@ export function SignUpArea(){
             <TextInput
                 value={email}
                 onChangeText={setEmail}
+                onFocus={() => setFocusEmail(true)}
+                onBlur={() => setFocusEmail(false)}
                 placeholder="default@example.com"
                 placeholderTextColor="#8C8287"
-                className="mt-2 h-[64px] mb-6 rounded-2xl border-[1.5px] border-neutral-400 bg-white px-4 text-base text-neutral-900 active:border-[2px] active:border-[#DC5863]"/>
+                className={`mt-2 h-[64px] mb-6 rounded-2xl border-[1.5px] bg-white px-4 text-base text-neutral-900 ${
+                    focusEmail ? "border-[#DC5863]" : "border-neutral-400"
+                }`}/>
 
             <PasswordField
                 label="Password"
