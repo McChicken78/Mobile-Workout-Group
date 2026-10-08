@@ -31,7 +31,7 @@ export function PasswordField({ label, ...inputProps }: Props) {
           onFocus={(e) => { setFocused(true); inputProps.onFocus?.(e); }}
           onBlur={(e) => { setFocused(false); inputProps.onBlur?.(e); }}
           placeholderTextColor="#8C8287"
-          className="h-full flex-1 pb-2 text-base text-neutral-900"
+          className="h-full flex-1 text-base text-neutral-900"
         />
 
         <Pressable

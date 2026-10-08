@@ -1,33 +1,39 @@
 import { useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { PasswordField } from "../ui/passwordField";
-import { LoginButton } from "./loginButton";
+import { SignUpButton } from "../auth/signupButton";
 
 
-export function LoginArea(){
+export function SignUpArea(){
+    const [displayName, setDisplayName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [emailFocused, setEmailFocused] = useState(false);
-
-    function handleLogin(): void {
-
-    }
+    const [confirmPassword, setConfirmPassword] = useState("")
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
 
     return(
         <View>
+            <Text className="text-lg font-semibold text-black">
+                Display Name
+            </Text>
+            <TextInput
+                value={displayName}
+                onChangeText={setDisplayName}
+                placeholder="Lebron James"
+                placeholderTextColor="#8C8287"
+                className="mt-2 h-[64px] mb-6 rounded-2xl border-[1.5px] border-neutral-400 bg-white px-4 text-base text-neutral-900 active:border-[2px] active:border-[#DC5863]"/>
+
+
             <Text className="text-lg font-semibold text-black">
                 Email
             </Text>
             <TextInput
                 value={email}
                 onChangeText={setEmail}
-                onFocus={() => setEmailFocused(true)}
-                onBlur={() => setEmailFocused(false)}
                 placeholder="default@example.com"
                 placeholderTextColor="#8C8287"
-                className={`mt-2 h-[64px] mb-6 rounded-2xl bg-white px-4 text-base text-neutral-900 ${
-                    emailFocused ? "border-[2px] border-[#DC5863]" : "border-[1.5px] border-neutral-400"
-                }`}/>
+                className="mt-2 h-[64px] mb-6 rounded-2xl border-[1.5px] border-neutral-400 bg-white px-4 text-base text-neutral-900 active:border-[2px] active:border-[#DC5863]"/>
 
             <PasswordField
                 label="Password"
@@ -45,9 +51,7 @@ export function LoginArea(){
                 <View className="h-px flex-1 bg-[#EFE7EA]" />
             </View>
 
-            <LoginButton/>
-
-        
+            <SignUpButton/>
 
         </View>
     )

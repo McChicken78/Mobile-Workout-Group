@@ -19,7 +19,7 @@ export function EmailButton() {
         accessibilityRole="button"
         accessibilityLabel="Continue with email"
         className="h-[54px] flex-row items-center justify-center gap-2.5 rounded-2xl bg-[#C94358] active:opacity-80"
-      >
+    >
         <MailIcon />
         <Text className="text-base font-semibold text-white">Continue with email</Text>
       </Pressable>

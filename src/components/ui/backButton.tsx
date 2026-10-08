@@ -17,7 +17,7 @@ export function BackButton() {
       accessibilityRole="button"
       accessibilityLabel="Back"
       hitSlop={8}
-      className="h-16 w-16 items-center justify-center rounded-full bg-[#1A0B10] active:opacity-70"
+      className="ml-4 h-14 w-14 self-start items-center justify-center rounded-full bg-[#1A0B10] active:opacity-70"
     >
       <Ionicons name="chevron-back" size={30} color="white" />
     </Pressable>
