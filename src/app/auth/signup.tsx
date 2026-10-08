@@ -1,25 +1,42 @@
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { BackButton } from "@/components/ui/backButton"
+import { GradientBackground } from "@/components/ui/gradientBackground";
+import { SignUpArea } from "@/components/auth/signupArea"
 
 export default function SignUp() {
   return (
-    <SafeAreaView className="flex-1 bg-[#DC5863]" edges={["top", "left", "right"]}>
-      {/* Top half */}
-      <View className="flex-1 justify-center px-6">
+    <GradientBackground>
+      <SafeAreaView className="flex-1" edges={["top", "left", "right"]}>
         <BackButton/>
-        <Text className="mt-8 text-6xl font-bold leading-[58px] tracking-tight text-[#1A0B10]">
-          Sign Up!
-        </Text>
-        <Text className="mt-3 text-lg leading-6 text-[#2B0D16]">
-          Sign up to begin your fitness journey solo or with the motivation of your friends.
-        </Text>
-      </View>
 
-      {/* Bottom panel */}
-      <View className="rounded-t-[32px] bg-white px-6 pb-10 pt-8">
+        {/* Scrolls the focused box above the keyboard, leaving bottomOffset px of space below it */}
+        <KeyboardAwareScrollView
+          bottomOffset={32}
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
+          {/* Top half */}
+          <View className="mt-4 px-6 pb-8">
+            <Text className="text-6xl font-bold leading-[58px] tracking-tight text-[#1A0B10]">
+              Sign Up!
+            </Text>
+            <Text className="mt-1 text-lg leading-6 text-[#2B0D16]">
+              Making your fitness journey fun!
+            </Text>
+          </View>
 
-      </View>
-    </SafeAreaView>
+          {/* Bottom panel */}
+          <View className="flex-1 rounded-t-[32px] bg-white px-6 pb-10 pt-8">
+              <SignUpArea/>
+          </View>
+        </KeyboardAwareScrollView>
+
+      </SafeAreaView>
+    </GradientBackground>
   );
 }

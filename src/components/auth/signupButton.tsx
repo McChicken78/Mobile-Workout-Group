@@ -5,13 +5,13 @@ type Props = {
   loading?: boolean;
 };
 
-export function LoginButton({ onPress, loading = false }: Props) {
+export function SignUpButton({ onPress, loading = false }: Props) {
   return (
     <Pressable
       onPress={onPress}
       disabled={loading}
       accessibilityRole="button"
-      accessibilityLabel="Log in"
+      accessibilityLabel="Sign up"
       className={`h-[54px] flex-row items-center justify-center gap-2.5 rounded-2xl bg-[#C94358] active:opacity-80 ${
         loading ? "opacity-60" : ""
       }`}
@@ -19,7 +19,7 @@ export function LoginButton({ onPress, loading = false }: Props) {
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (
-        <Text className="text-xl font-semibold text-white">Log in</Text>
+        <Text className="text-xl font-semibold text-white">Sign up</Text>
       )}
     </Pressable>
   );
