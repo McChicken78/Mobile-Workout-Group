@@ -1,22 +1,40 @@
-import { Text, View } from "react-native";
+import { useState } from "react";
+import { Alert, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { BackButton } from "@/components/ui/backButton"
 import { GradientBackground } from "@/components/ui/gradientBackground";
-import { SignUpArea } from "@/components/auth/signupArea"
+import { PasswordField } from "@/components/ui/passwordField";
+import { SignUpButton } from "@/components/auth/signupButton";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function SignUp() {
+  const { signUp } = useAuth();
+
+  const [displayName, setDisplayName] = useState("");
+  const [focusDisplayName, setFocusDisplayName] = useState(false);
+  const [email, setEmail] = useState("");
+  const [focusEmail, setFocusEmail] = useState(false);
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSignUp() {
+    setLoading(true);
+    try {
+      await signUp(email.trim(), password);
+    } catch (error) {
+      Alert.alert("Sign up failed", error instanceof Error ? error.message : "Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <GradientBackground>
-      {/* White backdrop for the bottom half, so the keyboard spacer below the panel shows white, not the gradient */}
       <View className="absolute inset-x-0 bottom-0 h-1/2 bg-white" />
 
       <SafeAreaView className="flex-1" edges={["top", "left", "right"]}>
         <BackButton/>
-
-        {/* Scrolls the focused box above the keyboard, leaving bottomOffset px of space below it.
-            "layout" mode adds a real spacer under the content instead of a scroll inset, which avoids
-            a jump back to the top when the keyboard changes height between boxes (e.g. AutoFill bar). */}
         <KeyboardAwareScrollView
           bottomOffset={32}
           mode="layout"
@@ -38,7 +56,51 @@ export default function SignUp() {
 
           {/* Bottom panel */}
           <View className="grow rounded-t-[32px] bg-white px-6 pb-10 pt-8">
-              <SignUpArea/>
+            <Text className="text-lg font-semibold text-black">
+              Display Name
+            </Text>
+            <TextInput
+              value={displayName}
+              onChangeText={setDisplayName}
+              onFocus={() => setFocusDisplayName(true)}
+              onBlur={() => setFocusDisplayName(false)}
+              placeholder="Lebron James"
+              placeholderTextColor="#8C8287"
+              className={`mt-2 h-[64px] mb-6 rounded-2xl border-[1.5px] bg-white px-4 text-base text-neutral-900 ${
+                focusDisplayName ? "border-[#DC5863]" : "border-neutral-400"
+              }`}/>
+
+            <Text className="text-lg font-semibold text-black">
+              Email
+            </Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              onFocus={() => setFocusEmail(true)}
+              onBlur={() => setFocusEmail(false)}
+              placeholder="default@example.com"
+              placeholderTextColor="#8C8287"
+              className={`mt-2 h-[64px] mb-6 rounded-2xl border-[1.5px] bg-white px-4 text-base text-neutral-900 ${
+                focusEmail ? "border-[#DC5863]" : "border-neutral-400"
+              }`}/>
+
+            <PasswordField
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Your password"
+              textContentType="password"
+            />
+
+            <Text className="self-end py-2 text-base font-semibold text-[#DC5863]">
+              Forgot Password?
+            </Text>
+
+            <View className="my-4 flex-row items-center gap-3">
+              <View className="h-px flex-1 bg-[#EFE7EA]" />
+            </View>
+
+            <SignUpButton onPress={handleSignUp} loading={loading}/>
           </View>
         </KeyboardAwareScrollView>
 
