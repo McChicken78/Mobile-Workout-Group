@@ -7,6 +7,8 @@ interface AuthContextType{
     user: User | null
     loading: boolean
     signUp: (email: string, password: string) => Promise<void>
+    verifySignUpCode: (email: string, code: string) => Promise<void>
+    resendSignUpCode: (email: string) => Promise<void>
     signIn: (email: string, password: string) => Promise<void>
     signOut: () => Promise<void>
 }
@@ -45,7 +47,24 @@ export function AuthProvider ({children} : {children: React.ReactNode}) {
 
 
     async function signUp (email: string, password: string) {
-        const {error} = await supabase.auth.signUp({email, password})
+        const {data, error} = await supabase.auth.signUp({email, password})
+
+        if(error) throw error
+
+        // Supabase returns a user with no identities when the email is already registered
+        if(data.user && data.user.identities?.length === 0) {
+            throw new Error("An account with this email already exists.")
+        }
+    }
+
+    async function verifySignUpCode (email: string, code: string) {
+        const {error} = await supabase.auth.verifyOtp({email, token: code, type: "email"})
+
+        if(error) throw error
+    }
+
+    async function resendSignUpCode (email: string) {
+        const {error} = await supabase.auth.resend({type: "signup", email})
 
         if(error) throw error
     }
@@ -65,7 +84,7 @@ export function AuthProvider ({children} : {children: React.ReactNode}) {
 
     return (
         <AuthContext.Provider 
-            value={{ session, user, loading, signIn, signUp, signOut }}>
+            value={{ session, user, loading, signIn, signUp, verifySignUpCode, resendSignUpCode, signOut }}>
             {children}
         </AuthContext.Provider>
     )
