@@ -24,7 +24,7 @@ export default function SignUp() {
   async function handleSignUp() {
     setLoading(true);
     try {
-      await signUp(email.trim(), password);
+      await signUp(email.trim(), password, displayName.trim());
       setCode("");
       setStep("code");
     } catch (error) {
