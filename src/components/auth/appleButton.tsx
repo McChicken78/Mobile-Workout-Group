@@ -15,7 +15,7 @@ export function AppleButton({ onPress }: Props) {
         }
     }
     return(
-    <Pressable onPress={handlePress} accessibilityRole="button" accessibilityLabel="Continue with Apple" className="h-[54px] mx-4 flex-row items-center justify-center gap-2.5 rounded-2xl bg-black active:opacity-80">
+    <Pressable onPress={handlePress} accessibilityRole="button" accessibilityLabel="Continue with Apple" className="h-[54px] flex-row items-center justify-center gap-2.5 rounded-2xl bg-black active:opacity-80">
         <Ionicons name="logo-apple" size={20} color="white" />
         <Text className="text-base font-semibold text-white">
             Continue with Apple

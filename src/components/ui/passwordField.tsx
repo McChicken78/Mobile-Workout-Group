@@ -17,7 +17,7 @@ export function PasswordField({ label, ...inputProps }: Props) {
 
       {/* The "box": border and background live here, not on the input */}
       <View
-        className={`h-[64px] flex-row items-center rounded-2xl border-[1.5px] bg-white pl-4 pr-1 ${
+        className={`h-[48px] flex-row items-center rounded-xl border-[1.5px] bg-white pl-4 pr-1 ${
           focused ? "border-[#DC5863]" : "border-neutral-400"
         }`}
       >
@@ -29,7 +29,7 @@ export function PasswordField({ label, ...inputProps }: Props) {
           onFocus={(e) => { setFocused(true); inputProps.onFocus?.(e); }}
           onBlur={(e) => { setFocused(false); inputProps.onBlur?.(e); }}
           placeholderTextColor="#8C8287"
-          className="h-full flex-1 text-base text-neutral-900"
+          className="h-full flex-1 py-0 text-[14px] text-neutral-900"
         />
 
         <Pressable

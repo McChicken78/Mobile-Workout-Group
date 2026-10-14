@@ -16,7 +16,7 @@ export function GoogleButton({ onPress }: Props) {
   }
 
   return (
-    <Pressable onPress={handlePress} accessibilityRole="button" accessibilityLabel="Continue with Google" className="h-[54px] mx-4 flex-row items-center justify-center gap-2.5 rounded-2xl border-[1.5px] border-neutral-300 bg-white active:opacity-80">
+    <Pressable onPress={handlePress} accessibilityRole="button" accessibilityLabel="Continue with Google" className="h-[54px] flex-row items-center justify-center gap-2.5 rounded-2xl border-[1.5px] border-neutral-300 bg-white active:opacity-80">
       <GoogleLogo size={18} />
       <Text className="text-base font-semibold text-[#1A0B10]">
         Continue with Google
