@@ -55,7 +55,6 @@ export default function SignUp() {
     <SafeAreaView className="flex-1 bg-white">
       <KeyboardAwareScrollView
         bottomOffset={32}
-        mode="layout"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
@@ -155,7 +154,7 @@ export default function SignUp() {
               value={password}
               onChangeText={setPassword}
               placeholder="At least 8 characters"
-              textContentType="newPassword"
+              textContentType="password"
             />
 
             <View className="mt-6">
@@ -187,9 +186,19 @@ export default function SignUp() {
             <Text className="text-center text-2xl font-bold text-[#1A0B10]">
               Check your email
             </Text>
-            <Text className="mb-6 mt-2 text-center text-base text-neutral-600">
-              We sent a verification code to {email.trim()}. Log in and enter the code to finish setting up your account.
-            </Text>
+            <View className="m-4 mb-8 items-center gap-1">
+              <Text className="text-center text-base text-neutral-600">
+                We sent a verification link to:
+              </Text>
+
+              <View className="rounded-xl bg-[#FDE8EB] px-3 py-1">
+                <Text className="text-base font-bold text-[#DC5863]">{email.trim()}</Text>
+              </View>
+
+              <Text className="text-center text-base text-neutral-600">
+                Login after confirming your email
+              </Text>
+            </View>
 
             <SignUpButton onPress={handleGoToLogin} label="Go to log in"/>
           </View>

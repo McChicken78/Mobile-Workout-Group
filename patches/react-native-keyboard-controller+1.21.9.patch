@@ -1,0 +1,149 @@
+diff --git a/node_modules/react-native-keyboard-controller/src/components/KeyboardAwareScrollView/index.tsx b/node_modules/react-native-keyboard-controller/src/components/KeyboardAwareScrollView/index.tsx
+index 90586e8..2003774 100644
+--- a/node_modules/react-native-keyboard-controller/src/components/KeyboardAwareScrollView/index.tsx
++++ b/node_modules/react-native-keyboard-controller/src/components/KeyboardAwareScrollView/index.tsx
+@@ -125,6 +125,7 @@ const KeyboardAwareScrollView = forwardRef<
+     const currentKeyboardFrameHeight = useSharedValue(0);
+     const keyboardHeight = useSharedValue(0);
+     const keyboardWillAppear = useSharedValue(false);
++    const keyboardWillHide = useSharedValue(false);
+     const tag = useSharedValue(-1);
+     const initialKeyboardSize = useSharedValue(0);
+     const scrollBeforeKeyboardMovement = useSharedValue(0);
+@@ -133,6 +134,15 @@ const KeyboardAwareScrollView = forwardRef<
+     const lastSelection =
+       useSharedValue<FocusedInputSelectionChangedEvent | null>(null);
+     const ghostViewSpace = useSharedValue(-1);
++    const scrollBeforeKeyboardAppear = useSharedValue(0);
++    // set while the keyboard gets smaller under the same input (e.g. the
++    // predictive bar disappears): the scroll range to give back alongside it
++    const shrinkScroll = useSharedValue<{
++      from: number;
++      to: number;
++      fromKeyboard: number;
++      toKeyboard: number;
++    } | null>(null);
+     const pendingSelectionForFocus = useSharedValue(false);
+     const selectionUpdatedSinceHide = useSharedValue(false);
+     const scrollViewPageY = useSharedValue(0);
+@@ -234,7 +244,7 @@ const KeyboardAwareScrollView = forwardRef<
+         // insets mode: `ScrollViewWithBottomPadding` extends scrollable area without
+         // changing layout, so when the keyboard hides and we're at the end of the
+         // ScrollView we must manually scroll back.
+-        if (!keyboardWillAppear.value && ghostViewSpace.value > 0) {
++        if (keyboardWillHide.value && ghostViewSpace.value > 0) {
+           scrollTo(
+             scrollViewAnimatedRef,
+             0,
+@@ -389,7 +399,18 @@ const KeyboardAwareScrollView = forwardRef<
+ 
+           keyboardWillAppear.value = e.height > 0 && keyboardHeight.value === 0;
+ 
+-          const keyboardWillHide = e.height === 0;
++          const previousKeyboardHeight = keyboardHeight.value;
++          const positionBeforeStart = position.value;
++          const keyboardWillShrink =
++            keyboardWillChangeSize &&
++            e.height < previousKeyboardHeight &&
++            tag.value === e.target;
++
++          if (keyboardWillAppear.value) {
++            scrollBeforeKeyboardAppear.value = position.value;
++          }
++
++          keyboardWillHide.value = e.height === 0;
+           const focusWasChanged =
+             (tag.value !== e.target && e.target !== -1) ||
+             keyboardWillChangeSize;
+@@ -398,7 +419,7 @@ const KeyboardAwareScrollView = forwardRef<
+             initialKeyboardSize.value = keyboardHeight.value;
+           }
+ 
+-          if (keyboardWillHide) {
++          if (keyboardWillHide.value) {
+             // on back transition need to interpolate as [0, keyboardHeight]
+             initialKeyboardSize.value = 0;
+             scrollPosition.value = scrollBeforeKeyboardMovement.value;
+@@ -472,6 +493,36 @@ const KeyboardAwareScrollView = forwardRef<
+               scrollPosition.value = position.value;
+             }
+           }
++
++          shrinkScroll.value = null;
++
++          // the input was scrolled into place for a taller keyboard: follow the
++          // keyboard back down, but never closer to it than `bottomOffset` and
++          // never past where the ScrollView was before the keyboard appeared
++          if (
++            enabled &&
++            keyboardWillShrink &&
++            position.value === positionBeforeStart &&
++            layout.value?.parentScrollViewTarget === scrollViewTarget.value
++          ) {
++            const absoluteY = layout.value?.layout.absoluteY || 0;
++            const inputHeight = layout.value?.layout.height || 0;
++            const spaceBelowInput = height - e.height - (absoluteY + inputHeight);
++            const scrollBack = Math.min(
++              previousKeyboardHeight - e.height,
++              spaceBelowInput - bottomOffset,
++              position.value - scrollBeforeKeyboardAppear.value,
++            );
++
++            if (scrollBack > 0) {
++              shrinkScroll.value = {
++                from: position.value,
++                to: position.value - scrollBack,
++                fromKeyboard: previousKeyboardHeight,
++                toKeyboard: e.height,
++              };
++            }
++          }
+         },
+         onMove: (e) => {
+           "worklet";
+@@ -485,6 +536,22 @@ const KeyboardAwareScrollView = forwardRef<
+             syncKeyboardFrame(e);
+           }
+ 
++          if (shrinkScroll.value) {
++            scrollTo(
++              scrollViewAnimatedRef,
++              0,
++              interpolate(
++                e.height,
++                [shrinkScroll.value.toKeyboard, shrinkScroll.value.fromKeyboard],
++                [shrinkScroll.value.to, shrinkScroll.value.from],
++                "clamp",
++              ),
++              false,
++            );
++
++            return;
++          }
++
+           // if the user has set disableScrollOnKeyboardHide, only auto-scroll when the keyboard opens
+           if (!disableScrollOnKeyboardHide || keyboardWillAppear.value) {
+             maybeScroll(e.height);
+@@ -495,6 +562,12 @@ const KeyboardAwareScrollView = forwardRef<
+ 
+           removeGhostPadding(e.height);
+ 
++          if (shrinkScroll.value) {
++            scrollTo(scrollViewAnimatedRef, 0, shrinkScroll.value.to, false);
++            position.value = shrinkScroll.value.to;
++            shrinkScroll.value = null;
++          }
++
+           keyboardHeight.value = e.height;
+           scrollPosition.value = position.value;
+ 
+@@ -518,6 +591,9 @@ const KeyboardAwareScrollView = forwardRef<
+         removeGhostPadding,
+         disableScrollOnKeyboardHide,
+         syncKeyboardFrame,
++        enabled,
++        bottomOffset,
++        height,
+       ],
+     );
+ 

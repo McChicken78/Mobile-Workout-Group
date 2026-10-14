@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from "react"
+import { useState, useEffect, useRef, createContext, useContext } from "react"
 import { Session, User } from "@supabase/supabase-js"
 import { supabase } from "@/lib/supabase"
 
@@ -10,6 +10,7 @@ interface AuthContextType{
     verifySignUpCode: (email: string, code: string) => Promise<void>
     resendSignUpCode: (email: string) => Promise<void>
     signIn: (email: string, password: string) => Promise<void>
+    resendSignInCode: (email: string) => Promise<void>
     signOut: () => Promise<void>
 }
 
@@ -19,6 +20,8 @@ export function AuthProvider ({children} : {children: React.ReactNode}) {
     const [session, setSession] = useState<Session | null>(null)
     const [user, setUser] = useState<User | null>(null)
     const [loading, setloading] = useState(true)
+    // True while signIn checks the password, so that short-lived session never reaches the app
+    const checkingPassword = useRef(false)
 
     useEffect(() => {
         async function InitializeSession () {
@@ -33,6 +36,8 @@ export function AuthProvider ({children} : {children: React.ReactNode}) {
 
         const {data: {subscription}} = supabase.auth.onAuthStateChange(
             (event, session) => {
+                if(checkingPassword.current) return
+
                 setSession(session)
                 setUser(session?.user || null)
                 setloading(false)
@@ -73,8 +78,28 @@ export function AuthProvider ({children} : {children: React.ReactNode}) {
         if(error) throw error
     }
 
+    // Checks the password, then emails a login code. The user is only signed in once verifySignUpCode succeeds
     async function signIn (email: string, password: string) {
-        const {error} = await supabase.auth.signInWithPassword({email, password})
+        checkingPassword.current = true
+
+        try {
+            const {error} = await supabase.auth.signInWithPassword({email, password})
+
+            if(error) throw error
+
+            // Drop the session the password check created, the emailed code is what signs the user in
+            const {error: signOutError} = await supabase.auth.signOut({scope: "local"})
+
+            if(signOutError) throw signOutError
+        } finally {
+            checkingPassword.current = false
+        }
+
+        await resendSignInCode(email)
+    }
+
+    async function resendSignInCode (email: string) {
+        const {error} = await supabase.auth.signInWithOtp({email, options: {shouldCreateUser: false}})
 
         if(error) throw error
     }
@@ -88,7 +113,7 @@ export function AuthProvider ({children} : {children: React.ReactNode}) {
 
     return (
         <AuthContext.Provider 
-            value={{ session, user, loading, signIn, signUp, verifySignUpCode, resendSignUpCode, signOut }}>
+            value={{ session, user, loading, signIn, resendSignInCode, signUp, verifySignUpCode, resendSignUpCode, signOut }}>
             {children}
         </AuthContext.Provider>
     )
