@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from "@/context/AuthProvider"
 import { useRouter } from "expo-router"
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { supabase } from "@/lib/supabase";
 
 function RootNavigation(){
   const { loading, session, user } = useAuth()
@@ -16,11 +17,23 @@ function RootNavigation(){
       return
     }
 
-    if(session){
-      router.replace("/tabs/home")
-    }
-    else {
+    if(!session){
       router.replace("/auth/welcome")
+      return
+    }
+
+    async function route(){
+      const {data, error} = await supabase
+        .from("profile")
+        .select("onboarded")
+        .eq("user_id", session!.user.id)
+        .single()
+
+      if(error || !data.onboarded){
+        router.replace("/onBoarding")
+      } else {
+        router.replace("/tabs/home")
+      }
     }
 
   }, [user, session, loading])
