@@ -32,10 +32,13 @@ function RootNavigation(){
       if(error || !data.onboarded){
         router.replace("/onBoarding")
       } else {
-        router.replace("/tabs/home")
+        // router.replace("/tabs/home")
+        router.replace("/error")
       }
     }
 
+
+    route()
   }, [user, session, loading])
 
   if(loading){
