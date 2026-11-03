@@ -2,7 +2,7 @@ import Svg, { Circle, Ellipse, G, Path, Rect } from "react-native-svg";
 
 const SKIN = "#F6C7A8";
 const DARK = "#3A1D2E";
-const SHIRT = "#F2A541";
+const SHIRT = "#7DD3FC";
 
 export function GoalIllustration({ width = 300 }: { width?: number }) {
   return (

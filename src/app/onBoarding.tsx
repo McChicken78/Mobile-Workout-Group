@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Pressable, Text, useWindowDimensions, View } from "react-native";
+import { Keyboard, Pressable, Text, useWindowDimensions, View, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { GradientBackground } from "@/components/ui/gradientBackground";
 import { GoalIllustration } from "@/components/onBoarding.tsx/setGoal";
+import { WeightIllustration } from "@/components/onBoarding.tsx/setWeight";
 
 const TOTAL_PAGES = 3;
 const GOAL_OPTIONS = [1, 2, 3, 4, 5, 6, 7];
@@ -13,6 +14,7 @@ export default function OnBoarding() {
    const [page, setPage] = useState(0);
    const [goal, setGoal] = useState(4);
    const [weight, setWeight] = useState<number | null>(null);
+   const [weightFocus, setWeightFocus] = useState(false);
    const { width: screenWidth } = useWindowDimensions();
 
    return (
@@ -27,9 +29,9 @@ export default function OnBoarding() {
                      accessibilityRole="button"
                      accessibilityLabel="Back"
                      hitSlop={8}
-                     className="absolute left-0 h-14 w-14 items-center justify-center rounded-full bg-white/20 active:opacity-70"
+                     className="absolute left-0 h-12 w-12 items-center justify-center rounded-full bg-white/20 active:opacity-70"
                   >
-                     <Ionicons name="chevron-back" size={30} color="white" />
+                     <Ionicons name="chevron-back" size={20} color="white" />
                   </Pressable>
                )}
 
@@ -95,6 +97,36 @@ export default function OnBoarding() {
                      </View>
                   </View>
                </View>
+            )}
+
+            {/* Page 2: Starting Weight */}
+            {page === 1 && (
+               // Tapping anywhere outside the input closes the keyboard
+               <Pressable onPress={Keyboard.dismiss} accessible={false} className="flex-1 justify-evenly">
+                  <View className="-mx-6 items-center">
+                     <WeightIllustration width={screenWidth * 0.85} />
+                  </View>
+                  <View>
+                     <Text className="-mt-6 text-3xl text-center font-bold tracking-tight text-white">
+                        Enter starting weight
+                     </Text>  
+                     <Text className="mt-2 text-center text-md text-white/80">
+                        To help track your weight progression
+                     </Text>      
+
+                     <TextInput
+                        placeholder="Enter your starting weight"
+                        keyboardType="numeric"
+                        value={weight?.toString()}
+                        onChangeText={(text) => setWeight(Number(text))}
+                        onFocus={() => setWeightFocus(true)}
+                        onBlur={() => setWeightFocus(false)}
+                        className={`mt-2 h-[54px] mb-4 rounded-xl border-1 bg-white/20 border-white px-2 py-1 ${weightFocus ? "border-white" : "border-white/30"}`}
+                     >
+                     </TextInput>
+                  </View>
+
+               </Pressable>
             )}
 
             {page >= 0 && page < TOTAL_PAGES - 1 && (
