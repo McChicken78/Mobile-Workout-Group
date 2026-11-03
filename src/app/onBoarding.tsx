@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, Text, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,8 +18,21 @@ export default function OnBoarding() {
    return (
       <GradientBackground>
          <SafeAreaView className="flex-1 px-6 pb-6">
-            {/* Progress dots */}
-            <View className="mt-4 flex-row justify-center gap-2">
+            {/* Top bar: back button on the left, progress dots centered */}
+            <View className="mt-2 h-14 flex-row items-center justify-center gap-2">
+               {/* Hidden on the first page since there's no earlier page to go to */}
+               {page > 0 && (
+                  <Pressable
+                     onPress={() => setPage(page - 1)}
+                     accessibilityRole="button"
+                     accessibilityLabel="Back"
+                     hitSlop={8}
+                     className="absolute left-0 h-14 w-14 items-center justify-center rounded-full bg-white/20 active:opacity-70"
+                  >
+                     <Ionicons name="chevron-back" size={30} color="white" />
+                  </Pressable>
+               )}
+
                {Array.from({ length: TOTAL_PAGES }, (_, i) => (
                   <View
                      key={i}
