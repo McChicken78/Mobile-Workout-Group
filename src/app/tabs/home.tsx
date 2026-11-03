@@ -21,7 +21,7 @@ export default function Home() {
          <SafeAreaView className="flex-1" edges={["top", "left", "right"]}>
             <Text>Home page logged in</Text>
 
-            <Pressable onPress={handleLogout}>
+            <Pressable onPress={handleLogout} className="p-4 bg-white text-[#DC5863] m-4 rounded-md ">
                <Text>Sign out</Text>
             </Pressable>
          </SafeAreaView>
