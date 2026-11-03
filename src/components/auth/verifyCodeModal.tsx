@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type ElementRef } from "react";
 import { Modal, Pressable, Text, TextInput, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,7 +18,7 @@ type Props = {
 };
 
 export function VerifyCodeModal({ visible, email, code, onChangeCode, onVerify, onResend, onClose, loading = false }: Props) {
-   const inputRef = useRef<TextInput>(null);
+   const inputRef = useRef<ElementRef<typeof TextInput>>(null);
    const [focused, setFocused] = useState(false);
 
    return (
