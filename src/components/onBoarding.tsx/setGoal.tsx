@@ -19,18 +19,18 @@ export function GoalIllustration({ width = 300 }: { width?: number }) {
       {/* Island */}
       <Path
         d="M26 192 Q 58 172 150 174 Q 252 176 276 192 Q 252 210 150 210 Q 46 210 26 192 Z"
-        fill="#FFFFFF"
+        fill="#ffdfbd"
       />
 
       {/* Right plant */}
-      <G fill="#FFB9AE">
+      <G fill="#84f581">
         <Path d="M232 186 C 222 160 226 140 238 122 C 246 142 246 164 236 186 Z" />
         <Path d="M240 186 C 246 166 258 154 272 150 C 270 166 260 180 244 187 Z" />
         <Path d="M230 186 C 220 172 208 166 196 166 C 202 178 214 186 230 188 Z" />
       </G>
 
       {/* Left plant */}
-      <G fill="#FFD9D2">
+      <G fill="#84f581">
         <Path d="M48 188 C 44 172 48 160 56 150 C 62 162 60 176 54 188 Z" />
         <Path d="M54 188 C 60 176 70 170 80 170 C 76 180 68 186 58 189 Z" />
       </G>

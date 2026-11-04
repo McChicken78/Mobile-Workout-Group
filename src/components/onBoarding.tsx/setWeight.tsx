@@ -19,15 +19,15 @@ export function WeightIllustration({ width = 300 }: { width?: number }) {
       {/* Island */}
       <Path
         d="M20 192 Q 56 172 150 174 Q 252 176 282 192 Q 252 210 150 210 Q 46 210 20 192 Z"
-        fill="#FFFFFF"
+        fill="#ffdfbd"
       />
 
       {/* Plants */}
-      <G fill="#FFD9D2">
+      <G fill="#84f581">
         <Path d="M42 190 C 38 172 42 160 50 150 C 56 162 54 176 48 190 Z" />
         <Path d="M48 190 C 54 178 64 172 74 172 C 70 182 62 188 52 191 Z" />
       </G>
-      <G fill="#FFB9AE">
+      <G fill="#84f581">
         <Path d="M252 190 C 246 170 250 156 260 144 C 266 158 266 176 258 190 Z" />
         <Path d="M258 190 C 266 176 278 170 288 170 C 284 182 274 188 262 191 Z" />
       </G>
@@ -55,7 +55,7 @@ export function WeightIllustration({ width = 300 }: { width?: number }) {
         <Ellipse cx={122} cy={195} rx={8} ry={3.5} fill="#1A0B10" />
         <Path d="M101 120 L 90 146" stroke={SKIN} strokeWidth={7} strokeLinecap="round" />
         <Path d="M126 120 L 137 146" stroke={SKIN} strokeWidth={7} strokeLinecap="round" />
-        <Rect x={100} y={110} width={27} height={42} rx={9} fill="#F2A541" />
+        <Rect x={100} y={110} width={27} height={42} rx={9} fill="#7DD3FC" />
         <Rect x={109} y={102} width={9} height={10} rx={3} fill={SKIN} />
         <Circle cx={113} cy={92} r={13} fill={SKIN} />
         <Path d="M100 90 C 100 76 126 74 127 90 C 120 84 108 84 100 90 Z" fill={DARK} />
