@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GradientBackground } from "@/components/ui/gradientBackground";
 import { GoalIllustration } from "@/components/onBoarding.tsx/setGoal";
 import { WeightIllustration } from "@/components/onBoarding.tsx/setWeight";
+import { AllSetIllustration } from "@/components/onBoarding.tsx/allSet";
 
 const TOTAL_PAGES = 3;
 const GOAL_OPTIONS = [1, 2, 3, 4, 5, 6, 7];
@@ -206,6 +207,26 @@ export default function OnBoarding() {
                            </View>
                         </View>
                      </Pressable>
+                  </View>
+
+                  {/* ---------- Page 3: all set ---------- */}
+                  <View
+                     style={{ width: screenWidth }}
+                     className="px-6 pt-4"
+                     aria-hidden={page !== 2}
+                  >
+                     <View className="-mx-6 items-center">
+                        <AllSetIllustration width={screenWidth * 0.8} />
+                     </View>
+
+                     <View className="mt-8 items-center">
+                        <Text className="text-[26px] font-bold tracking-tight text-white">
+                           You&apos;re all set!
+                        </Text>
+                        <Text className="mt-2 max-w-[290px] text-center text-[15px] leading-[22px] text-white/90">
+                           Your goal is {goal} {goal === 1 ? "day" : "days"} a week. Let&apos;s get started.
+                        </Text>
+                     </View>
                   </View>
                </Animated.View>
             </View>
