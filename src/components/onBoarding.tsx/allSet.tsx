@@ -59,7 +59,7 @@ export function AllSetIllustration({ width = 322 }: { width?: number }) {
       <Friend x={-60} y={-12} skin="#E8B08E" shirt="#5B8DEF" pants={DARK} hair={LONG_HAIR} hairColor={DARK} />
 
       {/* Middle: the same character as the other onboarding pages */}
-      <Friend x={0} y={-18} skin="#F6C7A8" shirt="#F2A541" pants={DARK} hair={SHORT_HAIR} hairColor={DARK} />
+      <Friend x={0} y={-18} skin="#F6C7A8" shirt="#7DD3FC" pants={DARK} hair={SHORT_HAIR} hairColor={DARK} />
 
       {/* Right: dark shirt, yellow pants */}
       <Friend x={60} y={-12} skin="#9C6B4E" shirt={DARK} pants="#F2A541" hair={BUZZ_HAIR} hairColor="#1A0B10" />

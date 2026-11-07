@@ -8,8 +8,9 @@ import { GradientBackground } from "@/components/ui/gradientBackground";
 import { GoalIllustration } from "@/components/onBoarding.tsx/setGoal";
 import { WeightIllustration } from "@/components/onBoarding.tsx/setWeight";
 import { AllSetIllustration } from "@/components/onBoarding.tsx/allSet";
+import { PreSetIllustration } from "@/components/onBoarding.tsx/preSet";
 
-const TOTAL_PAGES = 3;
+const TOTAL_PAGES = 4;
 const GOAL_OPTIONS = [1, 2, 3, 4, 5, 6, 7];
 
 export default function OnBoarding() {
@@ -35,12 +36,12 @@ export default function OnBoarding() {
    }
 
    // Only allow digits and one decimal point, max 5 characters (e.g. "182.4")
-   function handleWeightChange(text: string) {
-      const cleaned = text.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
-      if(Number(cleaned.slice(0, 5)) < 1500){
-         setWeight(cleaned.slice(0,5))
-      }
-   }
+function handleWeightChange(text: string) {
+   const cleaned = text.replace(/[^0-9.]/g, "");
+   if (!/^\d{0,4}(\.\d?)?$/.test(cleaned)) return;
+   if (Number(cleaned) >= 1500) return;
+   setWeight(cleaned);
+}
 
    return (
       <GradientBackground>
@@ -70,11 +71,31 @@ export default function OnBoarding() {
             {/* Spans the full screen width (cancels the px-6) so pages slide in from the screen edge */}
             <View className="-mx-6 flex-1 overflow-hidden">
                <Animated.View className="flex-1 flex-row" style={rowStyle}>
-                  {/* ---------- Page 1: weekly goal ---------- */}
+                  {/* ---------- Page 0: intro ---------- */}
                   <View
                      style={{ width: screenWidth }}
                      className="px-6 pt-4"
                      aria-hidden={page !== 0}
+                  >
+                     <View className="-mx-6 items-center">
+                        <PreSetIllustration width={screenWidth * 0.8} />
+                     </View>
+
+                     <View className="mt-8 items-center">
+                        <Text className="text-[26px] font-bold tracking-tight text-white">
+                           Build your streak
+                        </Text>
+                        <Text className="mt-2 max-w-[290px] text-center text-[15px] leading-[22px] text-white/90">
+                           Hit your weekly goal to keep your streak going. Let&apos;s get you set up.
+                        </Text>
+                     </View>
+                  </View>
+
+                  {/* ---------- Page 1: weekly goal ---------- */}
+                  <View
+                     style={{ width: screenWidth }}
+                     className="px-6 pt-4"
+                     aria-hidden={page !== 1}
                   >
                      {/* Fixed spacing (not justify-evenly) keeps the image at the same height on every page */}
                      <View className="-mx-6 items-center">
@@ -138,7 +159,7 @@ export default function OnBoarding() {
                   </View>
 
                   {/* ---------- Page 2: starting weight ---------- */}
-                  <View style={{ width: screenWidth }} aria-hidden={page !== 1}>
+                  <View style={{ width: screenWidth }} aria-hidden={page !== 2}>
                      <Pressable
                         onPress={Keyboard.dismiss}
                         accessible={false}
@@ -213,7 +234,7 @@ export default function OnBoarding() {
                   <View
                      style={{ width: screenWidth }}
                      className="px-6 pt-4"
-                     aria-hidden={page !== 2}
+                     aria-hidden={page !== 3}
                   >
                      <View className="-mx-6 items-center">
                         <AllSetIllustration width={screenWidth * 0.8} />
@@ -235,9 +256,19 @@ export default function OnBoarding() {
                <Pressable
                   onPress={() => goToPage(page + 1)}
                   accessibilityRole="button"
-                  className={`h-[54px] items-center justify-center rounded-full active:opacity-80 ${page == 1 && weight === "" ? "border border-white bg-white/10" : "bg-white"}`}
+                  className={`h-[54px] items-center justify-center rounded-full active:opacity-80 ${page === 2 && weight === "" ? "border border-white bg-white/10" : "bg-white"}`}
                >
-                  <Text className={`text-base font-bold ${page == 1 && weight === "" ? "text-white" : "text-[#CF4673]"}`}>{page == 1 && weight === "" ? "Skip" : "Next"}</Text>
+                  <Text className={`text-base font-bold ${page === 2 && weight === "" ? "text-white" : "text-[#CF4673]"}`}>{page === 2 && weight === "" ? "Skip" : "Next"}</Text>
+               </Pressable>
+            )}
+
+            {page == TOTAL_PAGES - 1 && (
+               <Pressable
+                  onPress={() => handleFinish()}
+                  accessibilityRole="button"
+                  className="h-[54px] items-center justify-center rounded-full bg-white active:opacity-80"
+               >
+                  <Text className="text-base font-bold text-[#CF4673]">Finish</Text>
                </Pressable>
             )}
          </SafeAreaView>
