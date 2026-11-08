@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Keyboard, Pressable, Text, TextInput, useWindowDimensions, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { supabase } from "@/lib/supabase";
 
 import { GradientBackground } from "@/components/ui/gradientBackground";
 import { GoalIllustration } from "@/components/onBoarding.tsx/setGoal";
@@ -14,6 +16,7 @@ const TOTAL_PAGES = 4;
 const GOAL_OPTIONS = [1, 2, 3, 4, 5, 6, 7];
 
 export default function OnBoarding() {
+   const router = useRouter();
    const [page, setPage] = useState(0);
    const [goal, setGoal] = useState(4);
    const [weight, setWeight] = useState("");
@@ -42,6 +45,11 @@ function handleWeightChange(text: string) {
    if (Number(cleaned) >= 1500) return;
    setWeight(cleaned);
 }
+
+// async function handleFinish() {
+//    const { error } = await supabase.from("")
+
+// }
 
    return (
       <GradientBackground>
