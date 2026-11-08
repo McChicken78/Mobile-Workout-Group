@@ -6,8 +6,7 @@ create table public.logged_weight(
     id bigint generated always as identity primary key,
     user_id uuid not null default auth.uid()
         references public.profile(user_id) on delete cascade,
-    weight numeric(5,1) not null check (weight > 0 and weight < 1500),
-    unit text not null default 'lb' check (unit in ('lb', 'kg')),
+    weight numeric(5,1) not null check (weight > 0 and weight < 1500),   -- always lb
     recorded_on date not null,                -- app sends the phone's local date
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now(),
@@ -47,14 +46,7 @@ create policy "Users can delete their own weight logs"
 on public.logged_weight for delete to authenticated
 using ((select auth.uid()) = user_id);
 
--- Automatically set the updated date when data changes
+-- Automatically set the updated date when data changes (set_updated_at is created in 002)
 create trigger logged_weight_set_updated_at
 before update on public.logged_weight
 for each row execute function public.set_updated_at();
-
--- ---------------------------------------
--- Weight now lives here, so remove the old profile columns
--- ---------------------------------------
-alter table public.profile
-    drop column start_weight,
-    drop column curr_weight;

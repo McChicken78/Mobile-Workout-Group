@@ -1,9 +1,14 @@
+-- The only allowed weight units (weights are always stored in lb; this is for display)
+create type public.weight_unit as enum ('lb', 'kg');
+
 -- Table
 create table public.profile(
-    user_id uuid    primary key references auth.users (id) on delete cascade,
+    user_id         uuid primary key references auth.users (id) on delete cascade,
     onboarded       boolean not null default false,
-    start_weight    int,
-    curr_weight     int,
+    weekly_goal     smallint not null default 4 check (weekly_goal between 1 and 7),
+    start_weight    numeric(5,1) check (start_weight > 0 and start_weight < 1500),   -- lb
+    curr_weight     numeric(5,1) check (curr_weight > 0 and curr_weight < 1500),     -- lb
+    unit            public.weight_unit not null default 'lb',
     streak          int not null default 0,
     last_workout    date,
     total_workouts  int not null default 0,
@@ -25,11 +30,12 @@ for update to authenticated
 using ((select auth.uid()) = user_id)
 with check ((select auth.uid()) = user_id);
 
--- but only these tables
+-- but only these columns
 revoke update on public.profile from authenticated;
-grant update(onboarded, start_weight, curr_weight, streak, last_workout, total_workouts)
+grant update(onboarded, weekly_goal, start_weight, curr_weight, unit, streak, last_workout, total_workouts)
 on public.profile to authenticated;
 
+-- Create a profile automatically when someone signs up
 create function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -46,6 +52,7 @@ create trigger on_auth_user_created
 after insert on auth.users
 for each row execute function public.handle_new_user();
 
+-- Give every existing user a profile
 insert into public.profile(user_id)
 select id from auth.users
 on conflict (user_id) do nothing;

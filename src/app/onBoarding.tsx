@@ -1,8 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { Keyboard, Pressable, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Alert, Keyboard, Pressable, Text, TextInput, useWindowDimensions, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthProvider";
 
 import { GradientBackground } from "@/components/ui/gradientBackground";
 import { GoalIllustration } from "@/components/onBoarding.tsx/setGoal";
@@ -14,12 +17,15 @@ const TOTAL_PAGES = 4;
 const GOAL_OPTIONS = [1, 2, 3, 4, 5, 6, 7];
 
 export default function OnBoarding() {
+   const router = useRouter();
    const [page, setPage] = useState(0);
    const [goal, setGoal] = useState(4);
    const [weight, setWeight] = useState("");
    const [unit, setUnit] = useState<"lb" | "kg">("lb");
    const [weightFocus, setWeightFocus] = useState(false);
+   const [saving, setSaving] = useState(false);
    const { width: screenWidth } = useWindowDimensions();
+   const { user } = useAuth();
 
    // All pages sit side by side in one row; sliding the row shows the current page
    const offsetX = useSharedValue(0);
@@ -42,6 +48,34 @@ function handleWeightChange(text: string) {
    if (Number(cleaned) >= 1500) return;
    setWeight(cleaned);
 }
+
+   // Saves the onboarding answers to the profile, then goes to the home screen
+   async function handleFinish() {
+      if (!user || saving) return;
+      setSaving(true);
+
+      // "", ".", and "0" all count as no weight (the database requires weight > 0)
+      const weightValue = Number(weight);
+      const startWeight = weightValue > 0 ? weightValue : null;
+
+      const { error } = await supabase
+         .from("profile")
+         .update({
+            weekly_goal: goal,
+            start_weight: startWeight,
+            curr_weight: startWeight,
+            onboarded: true,
+         })
+         .eq("user_id", user.id);
+
+      if (error) {
+         setSaving(false);
+         Alert.alert("Couldn't save", "Check your connection and try again.");
+         return;
+      }
+
+      router.replace("/tabs/home");
+   }
 
    return (
       <GradientBackground>
@@ -262,9 +296,10 @@ function handleWeightChange(text: string) {
                </Pressable>
             )}
 
-            {page == TOTAL_PAGES - 1 && (
+            {page === TOTAL_PAGES - 1 && (
                <Pressable
-                  onPress={() => handleFinish()}
+                  onPress={handleFinish}
+                  disabled={saving}
                   accessibilityRole="button"
                   className="h-[54px] items-center justify-center rounded-full bg-white active:opacity-80"
                >
