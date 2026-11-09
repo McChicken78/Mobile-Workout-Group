@@ -54,9 +54,12 @@ function handleWeightChange(text: string) {
       if (!user || saving) return;
       setSaving(true);
 
-      // "", ".", and "0" all count as no weight (the database requires weight > 0)
       const weightValue = Number(weight);
-      const startWeight = weightValue > 0 ? weightValue : null;
+      let startWeight = weightValue > 0 ? weightValue : null;
+
+      if (unit === "kg" && startWeight !== null) {
+         startWeight *= 2.20462;
+      }
 
       const { error } = await supabase
          .from("profile")
@@ -64,6 +67,7 @@ function handleWeightChange(text: string) {
             weekly_goal: goal,
             start_weight: startWeight,
             curr_weight: startWeight,
+            unit: unit,
             onboarded: true,
          })
          .eq("user_id", user.id);
@@ -74,7 +78,7 @@ function handleWeightChange(text: string) {
          return;
       }
 
-      router.replace("/tabs/home");
+      router.replace("/(tabs)/home");
    }
 
    return (
