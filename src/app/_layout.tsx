@@ -29,7 +29,13 @@ function RootNavigation() {
             .eq("user_id", session!.user.id)
             .single();
 
-         if (error || !data.onboarded) {
+         
+         if (error?.code === "PGRST116") {
+            await supabase.auth.signOut({ scope: "local" });
+            return;
+         }
+
+         if (error || !data?.onboarded) {
             router.replace("/onBoarding");
          } else {
             router.replace("/home");

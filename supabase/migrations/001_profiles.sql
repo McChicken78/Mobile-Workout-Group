@@ -4,14 +4,15 @@ create type public.weight_unit as enum ('lb', 'kg');
 -- Table
 create table public.profile(
     user_id         uuid primary key references auth.users (id) on delete cascade,
+    first_name      text not null,
+    last_name       text not null,
+    display_name    text not null,
     onboarded       boolean not null default false,
     weekly_goal     smallint not null default 4 check (weekly_goal between 1 and 7),
     start_weight    numeric(5,1) check (start_weight > 0 and start_weight < 1500),   -- lb
     curr_weight     numeric(5,1) check (curr_weight > 0 and curr_weight < 1500),     -- lb
     unit            public.weight_unit not null default 'lb',
     streak          int not null default 0,
-    last_workout    date,
-    total_workouts  int not null default 0,
     created_at      timestamptz not null default now()
 );
 
@@ -30,9 +31,9 @@ for update to authenticated
 using ((select auth.uid()) = user_id)
 with check ((select auth.uid()) = user_id);
 
--- but only these columns
+-- but only these columns (streak is left out so users can't edit it themselves)
 revoke update on public.profile from authenticated;
-grant update(onboarded, weekly_goal, start_weight, curr_weight, unit, streak, last_workout, total_workouts)
+grant update(first_name, last_name, display_name, onboarded, weekly_goal, start_weight, curr_weight, unit)
 on public.profile to authenticated;
 
 -- Create a profile automatically when someone signs up
@@ -43,7 +44,15 @@ security definer
 set search_path = ''
 as $$
 begin
-    insert into public.profile (user_id) values (new.id);
+    -- Names come from the sign-up form's metadata. Default to '' so a missing name
+    -- (e.g. Apple sign-in, which doesn't always share it) can't block the sign-up
+    insert into public.profile (user_id, first_name, last_name, display_name)
+    values (
+        new.id,
+        coalesce(trim(new.raw_user_meta_data ->> 'first_name'), ''),
+        coalesce(trim(new.raw_user_meta_data ->> 'last_name'), ''),
+        coalesce(trim(new.raw_user_meta_data ->> 'display_name'), '')
+    );
     return new;
 end;
 $$;
@@ -53,6 +62,11 @@ after insert on auth.users
 for each row execute function public.handle_new_user();
 
 -- Give every existing user a profile
-insert into public.profile(user_id)
-select id from auth.users
+insert into public.profile (user_id, first_name, last_name, display_name)
+select
+    id,
+    coalesce(trim(raw_user_meta_data ->> 'first_name'), ''),
+    coalesce(trim(raw_user_meta_data ->> 'last_name'), ''),
+    coalesce(trim(raw_user_meta_data ->> 'display_name'), '')
+from auth.users
 on conflict (user_id) do nothing;
